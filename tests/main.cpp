@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iomanip>
 #include <algorithm>
+#include <unordered_map>
 
 constexpr double PRECISION_THRESHOLD = 1e-9;
 
@@ -120,6 +121,47 @@ void drawShape(const Shape& shape) {
     }
 }
 
+// Custom hash function for Point
+namespace std {
+    template <>
+    struct hash<Point> {
+        std::size_t operator()(const Point& p) const {
+            auto h1 = std::hash<double>{}(p.x);
+            auto h2 = std::hash<double>{}(p.y);
+            return h1 ^ (h2 << 1);
+        }
+    };
+}
+
+// Custom hash function for pairs of Points
+namespace std {
+    template <>
+    struct hash<std::pair<Point, Point>> {
+        std::size_t operator()(const std::pair<Point, Point>& p) const {
+            auto h1 = std::hash<Point>{}(p.first);
+            auto h2 = std::hash<Point>{}(p.second);
+            return h1 ^ (h2 << 1);
+        }
+    };
+}
+
+// Check collinearity of three points
+bool areCollinear(const Point& a, const Point& b, const Point& c) {
+    double area = std::abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
+    return area < PRECISION_THRESHOLD;
+}
+
+// Find all points on the line defined by points a and b
+std::vector<Point> findPointsOnLine(const Point& a, const Point& b, const std::vector<Point>& points) {
+    std::vector<Point> result;
+    for (const auto& p : points) {
+        if (areCollinear(a, b, p)) {
+            result.push_back(p);
+        }
+    }
+    return result;
+}
+
 int main() {
     try {
         std::vector<std::unique_ptr<Shape>> shapes;
@@ -154,6 +196,47 @@ int main() {
                 } else {
                     std::cout << "  Point is not within shape.\n";
                 }
+            }
+        }
+
+        std::vector<Point> points = {
+            {1, 1}, {2, 2}, {3, 3}, {4, 5}, {5, 7}, {6, 8}
+        };
+
+        std::unordered_map<std::pair<Point, Point>, std::vector<Point>> lines;
+
+        // Find all possible pairs of points
+        for (size_t i = 0; i < points.size(); ++i) {
+            for (size_t j = i + 1; j < points.size(); ++j) {
+                const Point& a = points[i];
+                const Point& b = points[j];
+
+                // Get all points on the line defined by points a and b
+                std::vector<Point> collinearPoints = findPointsOnLine(a, b, points);
+
+                if (collinearPoints.size() > 2) {
+                    // Sort points to ensure consistency in key
+                    std::sort(collinearPoints.begin(), collinearPoints.end(), [](const Point& p1, const Point& p2) {
+                        return p1.x < p2.x || (p1.x == p2.x && p1.y < p2.y);
+                    });
+
+                    // Use a sorted pair of points as the key to avoid duplicates
+                    auto lineKey = getLineKey(a, b);
+                    lines[lineKey] = collinearPoints;
+                }
+            }
+        }
+
+        // Output results
+        for (const auto& line : lines) {
+            const auto& key = line.first;
+            const auto& collinearPoints = line.second;
+
+            std::cout << "Line through points (" << key.first.x << ", " << key.first.y << ") and ("
+                      << key.second.x << ", " << key.second.y << "):\n";
+
+            for (const auto& p : collinearPoints) {
+                std::cout << "  (" << p.x << ", " << p.y << ")\n";
             }
         }
     } catch (const std::exception& e) {
