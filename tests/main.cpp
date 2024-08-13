@@ -2,123 +2,127 @@
 #include "file_utils.hpp"
 #include <iostream>
 #include <vector>
-#include <unordered_map>
 #include <memory>
+#include <exception>
 #include <cmath>
 #include <iomanip>
-#include <sstream>
-#include <algorithm>
 
-using namespace geometry;
-
-// Precision threshold for floating-point comparisons
-constexpr double PRECISION_THRESHOLD = 1e-10;
-
-// Function to check if a point is on a line segment
-bool isPointOnSegment(const Point& p, const Point& p1, const Point& p2) {
-    double cross = (p.y - p1.y) * (p2.x - p1.x) - (p.x - p1.x) * (p2.y - p1.y);
-    if (std::abs(cross) > PRECISION_THRESHOLD) return false; // Not collinear
-
-    double dot = (p.x - p1.x) * (p2.x - p1.x) + (p.y - p1.y) * (p2.y - p1.y);
-    if (dot < 0) return false; // Behind p1
-
-    double len_sq = (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
-    if (dot > len_sq) return false; // Beyond p2
-
-    return true;
-}
-
-// Function to generate a unique key for a line defined by two points
-std::string generateLineKey(const Point& p1, const Point& p2) {
-    std::ostringstream oss;
-    oss << std::fixed << std::setprecision(2)
-        << std::min(p1.x, p2.x) << "," << std::min(p1.y, p2.y) << " to "
-        << std::max(p1.x, p2.x) << "," << std::max(p1.y, p2.y);
-    return oss.str();
-}
-
-// Function to remove duplicate points from a vector
-std::vector<Point> removeDuplicates(std::vector<Point> points) {
-    std::sort(points.begin(), points.end(),
-              [](const Point& a, const Point& b) {
-                  return std::tie(a.x, a.y) < std::tie(b.x, b.y);
-              });
-    auto last = std::unique(points.begin(), points.end(),
-                            [](const Point& a, const Point& b) {
-                                return a.x == b.x && a.y == b.y;
-                            });
-    points.erase(last, points.end());
-    return points;
-}
-
-// Function to find and display collinear points
-void findAndDisplayCollinearPoints(const std::vector<Point>& points) {
-    std::unordered_map<std::string, std::vector<Point>> lines;
-
-    for (size_t i = 0; i < points.size(); ++i) {
-        for (size_t j = i + 1; j < points.size(); ++j) {
-            const Point& p1 = points[i];
-            const Point& p2 = points[j];
-            std::string key = generateLineKey(p1, p2);
-
-            // Collect all points collinear with p1 and p2
-            std::vector<Point> collinearPoints;
-            for (const auto& p : points) {
-                if (isPointOnSegment(p, p1, p2)) {
-                    collinearPoints.push_back(p);
-                }
-            }
-
-            // Add line and its collinear points if there are more than 2 collinear points
-            if (collinearPoints.size() > 2) {
-                collinearPoints = removeDuplicates(collinearPoints);
-                if (!collinearPoints.empty()) {
-                    lines[key] = collinearPoints;
-                }
-            }
+// Function to check if a point is within a geometric object
+bool isPointWithin(const Point& point, const Shape& shape) {
+    try {
+        if (const Line* line = dynamic_cast<const Line*>(&shape)) {
+            return isPointOnSegment(point, line->start, line->end);
         }
+        if (const Segment* segment = dynamic_cast<const Segment*>(&shape)) {
+            return isPointOnSegment(point, segment->start, segment->end);
+        }
+        if (const Circle* circle = dynamic_cast<const Circle*>(&shape)) {
+            double dx = point.x - circle->center.x;
+            double dy = point.y - circle->center.y;
+            double distance = std::sqrt(dx * dx + dy * dy);
+            return distance <= circle->radius;
+        }
+        if (const Triangle* triangle = dynamic_cast<const Triangle*>(&shape)) {
+            // Calculate area of the triangle
+            double areaOrig = std::abs((triangle->vertex1.x * (triangle->vertex2.y - triangle->vertex3.y) +
+                                        triangle->vertex2.x * (triangle->vertex3.y - triangle->vertex1.y) +
+                                        triangle->vertex3.x * (triangle->vertex1.y - triangle->vertex2.y)) / 2.0);
+            // Calculate areas of triangles formed with the point
+            double area1 = std::abs((point.x * (triangle->vertex2.y - triangle->vertex3.y) +
+                                     triangle->vertex2.x * (triangle->vertex3.y - point.y) +
+                                     triangle->vertex3.x * (point.y - triangle->vertex2.y)) / 2.0);
+            double area2 = std::abs((triangle->vertex1.x * (point.y - triangle->vertex3.y) +
+                                     point.x * (triangle->vertex3.y - triangle->vertex1.y) +
+                                     triangle->vertex3.x * (triangle->vertex1.y - point.y)) / 2.0);
+            double area3 = std::abs((triangle->vertex1.x * (triangle->vertex2.y - point.y) +
+                                     triangle->vertex2.x * (point.y - triangle->vertex1.y) +
+                                     point.x * (triangle->vertex1.y - triangle->vertex2.y)) / 2.0);
+            // Point is inside or on the triangle if the sum of areas equals the original area
+            return std::abs(areaOrig - (area1 + area2 + area3)) < PRECISION_THRESHOLD;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Exception occurred in isPointWithin: " << e.what() << std::endl;
     }
+    return false;
+}
 
-    // Display the collected collinear points
-    for (const auto& [line, pts] : lines) {
-        std::cout << "Line: " << line << std::endl;
-        for (const auto& pt : pts) {
-            std::cout << "  Point: (" << pt.x << ", " << pt.y << ")" << std::endl;
+// Function to draw the object by printing coordinates of its segments
+void drawShape(const Shape& shape) {
+    try {
+        std::vector<std::pair<Point, Point>> segments;
+
+        if (const Line* line = dynamic_cast<const Line*>(&shape)) {
+            segments.emplace_back(line->start, line->end);
+        } else if (const Segment* segment = dynamic_cast<const Segment*>(&shape)) {
+            segments.emplace_back(segment->start, segment->end);
+        } else if (const Circle* circle = dynamic_cast<const Circle*>(&shape)) {
+            // Approximate the circle with a number of segments
+            const int num_segments = 36; // Can be made configurable
+            for (int i = 0; i < num_segments; ++i) {
+                double theta1 = 2 * M_PI * i / num_segments;
+                double theta2 = 2 * M_PI * (i + 1) / num_segments;
+                Point p1(circle->center.x + circle->radius * std::cos(theta1),
+                         circle->center.y + circle->radius * std::sin(theta1));
+                Point p2(circle->center.x + circle->radius * std::cos(theta2),
+                         circle->center.y + circle->radius * std::sin(theta2));
+                segments.emplace_back(p1, p2);
+            }
+        } else if (const Triangle* triangle = dynamic_cast<const Triangle*>(&shape)) {
+            segments.emplace_back(triangle->vertex1, triangle->vertex2);
+            segments.emplace_back(triangle->vertex2, triangle->vertex3);
+            segments.emplace_back(triangle->vertex3, triangle->vertex1);
         }
+
+        // Print each segment
+        for (const auto& segment : segments) {
+            std::cout << "Segment from (" << segment.first.x << ", " << segment.first.y
+                      << ") to (" << segment.second.x << ", " << segment.second.y << ")\n";
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Exception occurred in drawShape: " << e.what() << std::endl;
     }
 }
 
 int main() {
-    std::vector<std::unique_ptr<Shape>> shapes;
+    try {
+        std::vector<std::unique_ptr<Shape>> shapes;
+        shapes.push_back(std::make_unique<Line>(Point(1, 1), Point(5, 5)));
+        shapes.push_back(std::make_unique<Segment>(Point(0, 0), Point(3, 4)));
+        shapes.push_back(std::make_unique<Circle>(Point(0, 0), 5));
+        shapes.push_back(std::make_unique<Triangle>(Point(0, 0), Point(5, 0), Point(0, 5)));
 
-    // Example shapes creation
-    shapes.push_back(std::make_unique<Line>(Point(1, 1), Point(5, 5)));
-    shapes.push_back(std::make_unique<Segment>(Point(0, 0), Point(3, 4)));
-    shapes.push_back(std::make_unique<Circle>(Point(0, 0), 5));
-    shapes.push_back(std::make_unique<Triangle>(Point(0, 0), Point(5, 0), Point(0, 5)));
+        // Draw each shape
+        for (const auto& shape : shapes) {
+            drawShape(*shape);
+        }
 
-    // Draw shapes
-    for (const auto& shape : shapes) {
-        draw(*shape);
-        drawSegments(*shape);
-    }
+        // Save shapes to file
+        if (!saveShapesToFile(shapes, "shapes.txt")) {
+            throw std::runtime_error("Failed to save shapes to file!");
+        }
 
-    // Save shapes to file
-    if (!saveShapesToFile(shapes, "shapes.txt")) {
-        std::cerr << "Failed to save shapes to file!" << std::endl;
+        // Load shapes from file
+        std::vector<std::unique_ptr<Shape>> loadedShapes;
+        if (!loadShapesFromFile(loadedShapes, "shapes.txt")) {
+            throw std::runtime_error("Failed to load shapes from file!");
+        }
+
+        // Check if specific points are within loaded shapes
+        std::vector<Point> pointsToCheck = {Point(0, 0), Point(1, 1), Point(2, 2), Point(3, 4)};
+        for (const auto& point : pointsToCheck) {
+            std::cout << "Checking point (" << point.x << ", " << point.y << "):\n";
+            for (const auto& shape : loadedShapes) {
+                if (isPointWithin(point, *shape)) {
+                    std::cout << "  Point is within shape.\n";
+                } else {
+                    std::cout << "  Point is not within shape.\n";
+                }
+            }
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Exception occurred: " << e.what() << std::endl;
         return 1;
     }
-
-    // Load shapes from file
-    std::vector<std::unique_ptr<Shape>> loadedShapes;
-    if (!loadShapesFromFile(loadedShapes, "shapes.txt")) {
-        std::cerr << "Failed to load shapes from file!" << std::endl;
-        return 1;
-    }
-
-    // Find and display collinear points
-    std::vector<Point> pointsToCheck = {Point(0, 0), Point(1, 1), Point(2, 2), Point(3, 4)};
-    findAndDisplayCollinearPoints(pointsToCheck);
 
     return 0;
 }

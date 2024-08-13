@@ -6,6 +6,9 @@
 #include <cmath>
 
 namespace geometry {
+    
+// Define a constant for precision threshold
+constexpr double PRECISION_THRESHOLD = 1e-9;
 
 struct Point {
     double x, y;

@@ -1,35 +1,57 @@
 #include "geometry.hpp"
-#include <sstream>
+#include <iostream>
 #include <iomanip>
+#include <cmath>
+#include <limits>
 
 namespace geometry {
 
+// Constructor for the Line class
 Line::Line(const Point& p1, const Point& p2) : p1(p1), p2(p2) {}
 
+// Check if a point lies on the line segment
 bool Line::contains(const Point& p) const {
     double crossProduct = (p2.y - p1.y) * (p.x - p1.x) - (p2.x - p1.x) * (p.y - p1.y);
-    return std::abs(crossProduct) < 1e-9;
+    return std::abs(crossProduct) < PRECISION_THRESHOLD;
 }
 
+// Draw the line with formatted output
 void Line::draw() const {
-    std::cout << "Line: " << p1 << " to " << p2 << std::endl;
+    std::cout << "Line from (" << std::fixed << std::setprecision(2)
+              << p1.x << ", " << p1.y << ") to (" << p2.x << ", " << p2.y << ")" << std::endl;
 }
 
+// Draw the line segment with formatted output
 void Line::drawSegments() const {
-    std::cout << "Line segment: " << p1 << " to " << p2 << std::endl;
+    std::cout << "Line segment from (" << p1.x << ", " << p1.y 
+              << ") to (" << p2.x << ", " << p2.y << ")" << std::endl;
 }
 
+// Save the line's data to a file
 void Line::saveToFile(std::ostream& out) const {
-    out << "Line " << p1.x << " " << p1.y << " " << p2.x << " " << p2.y << std::endl;
+    if (out) {
+        out << "Line " << p1.x << " " << p1.y << " " << p2.x << " " << p2.y << std::endl;
+    } else {
+        throw std::runtime_error("Output stream is not open for writing.");
+    }
 }
 
+// Load the line's data from a file
 void Line::loadFromFile(std::istream& in) {
-    in >> p1.x >> p1.y >> p2.x >> p2.y;
+    if (!(in >> p1.x >> p1.y >> p2.x >> p2.y)) {
+        throw std::runtime_error("Error reading Line data from file: Invalid format or end of file.");
+    }
+
+    // Validate that the loaded coordinates are not NaN or infinite
+    if (std::isnan(p1.x) || std::isnan(p1.y) || std::isnan(p2.x) || std::isnan(p2.y) ||
+        std::isinf(p1.x) || std::isinf(p1.y) || std::isinf(p2.x) || std::isinf(p2.y)) {
+        throw std::runtime_error("Error reading Line data from file: Invalid coordinate values.");
+    }
 }
 
+// Retrieve the points of the line
 std::vector<Point> Line::getPoints() const {
     return { p1, p2 };
 }
 
 } // namespace geometry
-
