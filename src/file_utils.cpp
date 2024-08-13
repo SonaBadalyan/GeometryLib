@@ -1,4 +1,10 @@
-#include "geometry.hpp"
+#include "Shape.hpp"
+#include "Point.hpp"
+#include "Line.hpp"
+#include "LineSegment.hpp"
+#include "Circle.hpp"
+#include "Triangle.hpp"
+
 #include <fstream>
 #include <sstream>
 #include <memory>
@@ -42,8 +48,8 @@ void loadShapesFromFile(std::vector<std::unique_ptr<Shape>>& shapes, const std::
 
             if (type == "Line") {
                 shape = std::make_unique<Line>(Point(), Point());
-            } else if (type == "Segment") {
-                shape = std::make_unique<Segment>(Point(), Point());
+            } else if (type == "LineSegment") {
+                shape = std::make_unique<LineSegment>(Point(), Point());
             } else if (type == "Circle") {
                 shape = std::make_unique<Circle>(Point(), 0);
             } else if (type == "Triangle") {

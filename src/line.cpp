@@ -1,33 +1,30 @@
-#include "geometry.hpp"
 #include <iostream>
 #include <iomanip>
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 
 namespace geometry {
 
-// Constructor for the Line class
+
 Line::Line(const Point& p1, const Point& p2) : p1(p1), p2(p2) {}
 
-// Check if a point lies on the line segment
+
 bool Line::contains(const Point& p) const {
     double crossProduct = (p2.y - p1.y) * (p.x - p1.x) - (p2.x - p1.x) * (p.y - p1.y);
-    return std::abs(crossProduct) < PRECISION_THRESHOLD;
+    return std::abs(crossProduct) < EPSILON
 }
 
-// Draw the line with formatted output
 void Line::draw() const {
     std::cout << "Line from (" << std::fixed << std::setprecision(2)
               << p1.x << ", " << p1.y << ") to (" << p2.x << ", " << p2.y << ")" << std::endl;
 }
 
-// Draw the line segment with formatted output
 void Line::drawSegments() const {
     std::cout << "Line segment from (" << p1.x << ", " << p1.y 
               << ") to (" << p2.x << ", " << p2.y << ")" << std::endl;
 }
 
-// Save the line's data to a file
 void Line::saveToFile(std::ostream& out) const {
     if (out) {
         out << "Line " << p1.x << " " << p1.y << " " << p2.x << " " << p2.y << std::endl;
@@ -36,7 +33,6 @@ void Line::saveToFile(std::ostream& out) const {
     }
 }
 
-// Load the line's data from a file
 void Line::loadFromFile(std::istream& in) {
     if (!(in >> p1.x >> p1.y >> p2.x >> p2.y)) {
         throw std::runtime_error("Error reading Line data from file: Invalid format or end of file.");
@@ -49,9 +45,12 @@ void Line::loadFromFile(std::istream& in) {
     }
 }
 
-// Retrieve the points of the line
 std::vector<Point> Line::getPoints() const {
     return { p1, p2 };
+}
+
+double Line::distanceToPoint(const double A, const double B, const double C, const Point& p) const {
+    return std::abs(A * p.x + B * p.y + C) / std::sqrt(A * A + B * B);
 }
 
 } // namespace geometry

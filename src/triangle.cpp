@@ -6,14 +6,13 @@
 
 namespace geometry {
 
-// Constructor for the Triangle class
 Triangle::Triangle(const Point& p1, const Point& p2, const Point& p3) : p1(p1), p2(p2), p3(p3) {}
 
 // Check if a point is inside the triangle using barycentric coordinates
 bool Triangle::contains(const Point& p) const {
     // Calculate the barycentric coordinates
     double denominator = (p2.y - p3.y) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.y - p3.y);
-    if (std::abs(denominator) < PRECISION_THRESHOLD) {
+    if (std::abs(denominator) < EPSILON) {
         throw std::runtime_error("Degenerate triangle: the points are collinear.");
     }
 

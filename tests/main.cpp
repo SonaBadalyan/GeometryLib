@@ -1,5 +1,5 @@
-#include "geometry.hpp"
 #include "file_utils.hpp"
+
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <unordered_map>
 
-constexpr double PRECISION_THRESHOLD = 1e-9;
 
 // Helper function to check if a point is on a line segment
 bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd) {
@@ -19,14 +18,14 @@ bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd
     double minY = std::min(segStart.y, segEnd.y);
     double maxY = std::max(segStart.y, segEnd.y);
 
-    if (p.x < minX - PRECISION_THRESHOLD || p.x > maxX + PRECISION_THRESHOLD ||
-        p.y < minY - PRECISION_THRESHOLD || p.y > maxY + PRECISION_THRESHOLD) {
+    if (p.x < minX - EPSILON || p.x > maxX + EPSILON ||
+        p.y < minY - EPSILON || p.y > maxY + EPSILON) {
         return false;
     }
 
     // Check collinearity using the cross product
     double crossProduct = (p.y - segStart.y) * (segEnd.x - segStart.x) - (p.x - segStart.x) * (segEnd.y - segStart.y);
-    if (std::abs(crossProduct) > PRECISION_THRESHOLD) {
+    if (std::abs(crossProduct) > EPSILON) {
         return false;
     }
 
@@ -51,7 +50,7 @@ bool isPointWithin(const Point& point, const Shape& shape) {
         if (const Line* line = dynamic_cast<const Line*>(&shape)) {
             return isPointOnSegment(point, line->start, line->end);
         }
-        if (const Segment* segment = dynamic_cast<const Segment*>(&shape)) {
+        if (const LineSegment* segment = dynamic_cast<const LineSegment*>(&shape)) {
             return isPointOnSegment(point, segment->start, segment->end);
         }
         if (const Circle* circle = dynamic_cast<const Circle*>(&shape)) {
@@ -76,7 +75,7 @@ bool isPointWithin(const Point& point, const Shape& shape) {
                                      triangle->p2.x * (point.y - triangle->p1.y) +
                                      point.x * (triangle->p1.y - triangle->p2.y)) / 2.0);
             // Point is inside or on the triangle if the sum of areas equals the original area
-            return std::abs(areaOrig - (area1 + area2 + area3)) < PRECISION_THRESHOLD;
+            return std::abs(areaOrig - (area1 + area2 + area3)) < EPSILON;
         }
     } catch (const std::exception& e) {
         std::cerr << "Exception occurred in isPointWithin: " << e.what() << std::endl;
@@ -91,7 +90,7 @@ void drawShape(const Shape& shape) {
 
         if (const Line* line = dynamic_cast<const Line*>(&shape)) {
             segments.emplace_back(line->start, line->end);
-        } else if (const Segment* segment = dynamic_cast<const Segment*>(&shape)) {
+        } else if (const LineSegment* segment = dynamic_cast<const LineSegment*>(&shape)) {
             segments.emplace_back(segment->start, segment->end);
         } else if (const Circle* circle = dynamic_cast<const Circle*>(&shape)) {
             // Approximate the circle with a number of segments
@@ -148,7 +147,7 @@ namespace std {
 // Check collinearity of three points
 bool areCollinear(const Point& a, const Point& b, const Point& c) {
     double area = std::abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
-    return area < PRECISION_THRESHOLD;
+    return area < EPSILON;
 }
 
 // Find all points on the line defined by points a and b
@@ -166,7 +165,7 @@ int main() {
     try {
         std::vector<std::unique_ptr<Shape>> shapes;
         shapes.push_back(std::make_unique<Line>(Point(1, 1), Point(5, 5)));
-        shapes.push_back(std::make_unique<Segment>(Point(0, 0), Point(3, 4)));
+        shapes.push_back(std::make_unique<LineSegment>(Point(0, 0), Point(3, 4)));
         shapes.push_back(std::make_unique<Circle>(Point(0, 0), 5));
         shapes.push_back(std::make_unique<Triangle>(Point(0, 0), Point(5, 0), Point(0, 5)));
 
