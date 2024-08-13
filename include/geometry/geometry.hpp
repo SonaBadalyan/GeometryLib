@@ -1,27 +1,39 @@
-// include/geometry/geometry.h
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#ifndef GEOMETRY_HPP
+#define GEOMETRY_HPP
+
+#include <iostream>
 #include <vector>
+#include <cmath>
 
-namespace ODAGeometry {
+namespace geometry {
 
-class Point {
-public:
+struct Point {
     double x, y;
+
     Point(double x = 0, double y = 0) : x(x), y(y) {}
-    friend std::ostream& operator<<(std::ostream& os, const Point& p);
-    friend std::istream& operator>>(std::istream& is, Point& p);
+
+    friend std::ostream& operator<<(std::ostream& out, const Point& point) {
+        out << "(" << point.x << ", " << point.y << ")";
+        return out;
+    }
+
+    friend std::istream& operator>>(std::istream& in, Point& point) {
+        in >> point.x >> point.y;
+        return in;
+    }
 };
 
 class Shape {
 public:
-    virtual bool containsPoint(const Point& p) const = 0;
-    virtual std::vector<Point> getDrawSegments() const = 0;
-    virtual void serialize(std::ostream& os) const = 0;
-    virtual void deserialize(std::istream& is) = 0;
     virtual ~Shape() = default;
+    virtual bool contains(const Point& p) const = 0;
+    virtual void draw() const = 0;
+    virtual void drawSegments() const = 0;
+    virtual void saveToFile(std::ostream& out) const = 0;
+    virtual void loadFromFile(std::istream& in) = 0;
+    virtual std::vector<Point> getPoints() const = 0;
 };
 
 } // namespace geometry
 
-#endif // GEOMETRY_H
+#endif // GEOMETRY_HPP
