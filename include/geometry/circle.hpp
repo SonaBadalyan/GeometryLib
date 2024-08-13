@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_HPP
 #define GEOMETRY_HPP
 
-#include "Shape"
+#include "Shape.hpp"
 #include <iostream>
 #include <vector>
 
