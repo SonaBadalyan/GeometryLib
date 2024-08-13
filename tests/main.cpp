@@ -18,7 +18,6 @@ bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd
     double minY = std::min(segStart.y, segEnd.y);
     double maxY = std::max(segStart.y, segEnd.y);
 
-    // Check bounding box
     if (p.x < minX - PRECISION_THRESHOLD || p.x > maxX + PRECISION_THRESHOLD ||
         p.y < minY - PRECISION_THRESHOLD || p.y > maxY + PRECISION_THRESHOLD) {
         return false;
@@ -26,13 +25,11 @@ bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd
 
     // Check collinearity using the cross product
     double crossProduct = (p.y - segStart.y) * (segEnd.x - segStart.x) - (p.x - segStart.x) * (segEnd.y - segStart.y);
-
-    // The point must be collinear with the segment
     if (std::abs(crossProduct) > PRECISION_THRESHOLD) {
         return false;
     }
 
-    // Optional: Check if the point lies exactly on the segment using dot product
+    // Check if the point lies exactly on the segment using dot product
     double dotProduct = (p.x - segStart.x) * (segEnd.x - segStart.x) + (p.y - segStart.y) * (segEnd.y - segStart.y);
     if (dotProduct < 0) {
         return false; // Point is outside the segment on one end
@@ -64,19 +61,19 @@ bool isPointWithin(const Point& point, const Shape& shape) {
         }
         if (const Triangle* triangle = dynamic_cast<const Triangle*>(&shape)) {
             // Calculate area of the triangle
-            double areaOrig = std::abs((triangle->vertex1.x * (triangle->vertex2.y - triangle->vertex3.y) +
-                                        triangle->vertex2.x * (triangle->vertex3.y - triangle->vertex1.y) +
-                                        triangle->vertex3.x * (triangle->vertex1.y - triangle->vertex2.y)) / 2.0);
+            double areaOrig = std::abs((triangle->p1.x * (triangle->p2.y - triangle->p3.y) +
+                                        triangle->p2.x * (triangle->p3.y - triangle->p1.y) +
+                                        triangle->p3.x * (triangle->p1.y - triangle->p2.y)) / 2.0);
             // Calculate areas of triangles formed with the point
-            double area1 = std::abs((point.x * (triangle->vertex2.y - triangle->vertex3.y) +
-                                     triangle->vertex2.x * (triangle->vertex3.y - point.y) +
-                                     triangle->vertex3.x * (point.y - triangle->vertex2.y)) / 2.0);
-            double area2 = std::abs((triangle->vertex1.x * (point.y - triangle->vertex3.y) +
-                                     point.x * (triangle->vertex3.y - triangle->vertex1.y) +
-                                     triangle->vertex3.x * (triangle->vertex1.y - point.y)) / 2.0);
-            double area3 = std::abs((triangle->vertex1.x * (triangle->vertex2.y - point.y) +
-                                     triangle->vertex2.x * (point.y - triangle->vertex1.y) +
-                                     point.x * (triangle->vertex1.y - triangle->vertex2.y)) / 2.0);
+            double area1 = std::abs((point.x * (triangle->p2.y - triangle->p3.y) +
+                                     triangle->p2.x * (triangle->p3.y - point.y) +
+                                     triangle->p3.x * (point.y - triangle->p2.y)) / 2.0);
+            double area2 = std::abs((triangle->p1.x * (point.y - triangle->p3.y) +
+                                     point.x * (triangle->p3.y - triangle->p1.y) +
+                                     triangle->p3.x * (triangle->p1.y - point.y)) / 2.0);
+            double area3 = std::abs((triangle->p1.x * (triangle->p2.y - point.y) +
+                                     triangle->p2.x * (point.y - triangle->p1.y) +
+                                     point.x * (triangle->p1.y - triangle->p2.y)) / 2.0);
             // Point is inside or on the triangle if the sum of areas equals the original area
             return std::abs(areaOrig - (area1 + area2 + area3)) < PRECISION_THRESHOLD;
         }
@@ -108,9 +105,9 @@ void drawShape(const Shape& shape) {
                 segments.emplace_back(p1, p2);
             }
         } else if (const Triangle* triangle = dynamic_cast<const Triangle*>(&shape)) {
-            segments.emplace_back(triangle->vertex1, triangle->vertex2);
-            segments.emplace_back(triangle->vertex2, triangle->vertex3);
-            segments.emplace_back(triangle->vertex3, triangle->vertex1);
+            segments.emplace_back(triangle->p1, triangle->p2);
+            segments.emplace_back(triangle->p2, triangle->p3);
+            segments.emplace_back(triangle->p3, triangle->p1);
         }
 
         // Print each segment
