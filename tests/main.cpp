@@ -6,6 +6,46 @@
 #include <exception>
 #include <cmath>
 #include <iomanip>
+#include <algorithm>
+
+constexpr double PRECISION_THRESHOLD = 1e-9;
+
+// Helper function to check if a point is on a line segment
+bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd) {
+    // Check if the point is within the bounding box of the segment
+    double minX = std::min(segStart.x, segEnd.x);
+    double maxX = std::max(segStart.x, segEnd.x);
+    double minY = std::min(segStart.y, segEnd.y);
+    double maxY = std::max(segStart.y, segEnd.y);
+
+    // Check bounding box
+    if (p.x < minX - PRECISION_THRESHOLD || p.x > maxX + PRECISION_THRESHOLD ||
+        p.y < minY - PRECISION_THRESHOLD || p.y > maxY + PRECISION_THRESHOLD) {
+        return false;
+    }
+
+    // Check collinearity using the cross product
+    double crossProduct = (p.y - segStart.y) * (segEnd.x - segStart.x) - (p.x - segStart.x) * (segEnd.y - segStart.y);
+
+    // The point must be collinear with the segment
+    if (std::abs(crossProduct) > PRECISION_THRESHOLD) {
+        return false;
+    }
+
+    // Optional: Check if the point lies exactly on the segment using dot product
+    double dotProduct = (p.x - segStart.x) * (segEnd.x - segStart.x) + (p.y - segStart.y) * (segEnd.y - segStart.y);
+    if (dotProduct < 0) {
+        return false; // Point is outside the segment on one end
+    }
+
+    double squaredLengthBA = (segEnd.x - segStart.x) * (segEnd.x - segStart.x) +
+                              (segEnd.y - segStart.y) * (segEnd.y - segStart.y);
+    if (dotProduct > squaredLengthBA) {
+        return false; // Point is outside the segment on the other end
+    }
+
+    return true;
+}
 
 // Function to check if a point is within a geometric object
 bool isPointWithin(const Point& point, const Shape& shape) {
