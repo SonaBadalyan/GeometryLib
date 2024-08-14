@@ -1,5 +1,9 @@
+#include "LineSegment.hpp"
+
+#include <iostream>
 #include <iomanip>
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 
 namespace geometry {

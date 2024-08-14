@@ -1,4 +1,10 @@
 #include "file_utils.hpp"
+#include "Shape.hpp"
+#include "Point.hpp"
+#include "Line.hpp"
+#include "LineSegment.hpp"
+#include "Circle.hpp"
+#include "Triangle.hpp"
 
 #include <iostream>
 #include <vector>
