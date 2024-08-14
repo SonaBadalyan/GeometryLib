@@ -1,0 +1,44 @@
+[
+{
+  "directory": "C:/Users/sonab/OneDrive/Documents/GeometryLib/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -IC:/Users/sonab/OneDrive/Documents/GeometryLib/include -IC:/Users/sonab/OneDrive/Documents/GeometryLib/src -g -std=gnu++17 -o CMakeFiles\\ODAGeometryLib.dir\\src\\Line.cpp.obj -c C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Line.cpp",
+  "file": "C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Line.cpp",
+  "output": "CMakeFiles\\ODAGeometryLib.dir\\src\\Line.cpp.obj"
+},
+{
+  "directory": "C:/Users/sonab/OneDrive/Documents/GeometryLib/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -IC:/Users/sonab/OneDrive/Documents/GeometryLib/include -IC:/Users/sonab/OneDrive/Documents/GeometryLib/src -g -std=gnu++17 -o CMakeFiles\\ODAGeometryLib.dir\\src\\Point.cpp.obj -c C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Point.cpp",
+  "file": "C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Point.cpp",
+  "output": "CMakeFiles\\ODAGeometryLib.dir\\src\\Point.cpp.obj"
+},
+{
+  "directory": "C:/Users/sonab/OneDrive/Documents/GeometryLib/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -IC:/Users/sonab/OneDrive/Documents/GeometryLib/include -IC:/Users/sonab/OneDrive/Documents/GeometryLib/src -g -std=gnu++17 -o CMakeFiles\\ODAGeometryLib.dir\\src\\Triangle.cpp.obj -c C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Triangle.cpp",
+  "file": "C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Triangle.cpp",
+  "output": "CMakeFiles\\ODAGeometryLib.dir\\src\\Triangle.cpp.obj"
+},
+{
+  "directory": "C:/Users/sonab/OneDrive/Documents/GeometryLib/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -IC:/Users/sonab/OneDrive/Documents/GeometryLib/include -IC:/Users/sonab/OneDrive/Documents/GeometryLib/src -g -std=gnu++17 -o CMakeFiles\\ODAGeometryLib.dir\\src\\Circle.cpp.obj -c C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Circle.cpp",
+  "file": "C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\Circle.cpp",
+  "output": "CMakeFiles\\ODAGeometryLib.dir\\src\\Circle.cpp.obj"
+},
+{
+  "directory": "C:/Users/sonab/OneDrive/Documents/GeometryLib/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -IC:/Users/sonab/OneDrive/Documents/GeometryLib/include -IC:/Users/sonab/OneDrive/Documents/GeometryLib/src -g -std=gnu++17 -o CMakeFiles\\ODAGeometryLib.dir\\src\\FileHandler.cpp.obj -c C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\FileHandler.cpp",
+  "file": "C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\FileHandler.cpp",
+  "output": "CMakeFiles\\ODAGeometryLib.dir\\src\\FileHandler.cpp.obj"
+},
+{
+  "directory": "C:/Users/sonab/OneDrive/Documents/GeometryLib/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -IC:/Users/sonab/OneDrive/Documents/GeometryLib/include -IC:/Users/sonab/OneDrive/Documents/GeometryLib/src -g -std=gnu++17 -o CMakeFiles\\ODAGeometryLib.dir\\src\\LineSegment.cpp.obj -c C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\LineSegment.cpp",
+  "file": "C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\src\\LineSegment.cpp",
+  "output": "CMakeFiles\\ODAGeometryLib.dir\\src\\LineSegment.cpp.obj"
+},
+{
+  "directory": "C:/Users/sonab/OneDrive/Documents/GeometryLib/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -IC:/Users/sonab/OneDrive/Documents/GeometryLib/include -IC:/Users/sonab/OneDrive/Documents/GeometryLib/src -g -std=gnu++17 -o CMakeFiles\\Driver.dir\\console\\main.cpp.obj -c C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\console\\main.cpp",
+  "file": "C:\\Users\\sonab\\OneDrive\\Documents\\GeometryLib\\console\\main.cpp",
+  "output": "CMakeFiles\\Driver.dir\\console\\main.cpp.obj"
+}
+]

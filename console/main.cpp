@@ -1,4 +1,4 @@
-#include "file_utils.hpp"
+#include "FileHandler.hpp"
 #include "Shape.hpp"
 #include "Point.hpp"
 #include "Line.hpp"
@@ -14,6 +14,8 @@
 #include <iomanip>
 #include <algorithm>
 #include <unordered_map>
+
+using namespace geometry;
 
 // Helper function to check if a point is on a line segment
 bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd) {
@@ -54,7 +56,7 @@ bool isPointWithin(const Point& point, const Shape& shape) {
     try {
         // Check if the shape is a Line
         if (const Line* line = dynamic_cast<const Line*>(&shape)) {
-            return isPointOnSegment(point, line->start, line->end);
+            return isPointOnSegment(point, line->p1, line->p2);
         }
         // Check if the shape is a LineSegment
         if (const LineSegment* segment = dynamic_cast<const LineSegment*>(&shape)) {
@@ -99,7 +101,7 @@ void drawShape(const Shape& shape) {
 
         // Handle Line and LineSegment shapes
         if (const Line* line = dynamic_cast<const Line*>(&shape)) {
-            segments.emplace_back(line->start, line->end);
+            segments.emplace_back(line->p1, line->p2);
         } else if (const LineSegment* segment = dynamic_cast<const LineSegment*>(&shape)) {
             segments.emplace_back(segment->start, segment->end);
         }
@@ -175,6 +177,18 @@ std::vector<Point> findPointsOnLine(const Point& a, const Point& b, const std::v
     return result;
 }
 
+// Function to get the key for the line defined by points a and b
+std::pair<Point, Point> getLineKey(const Point& a, const Point& b) {
+    // Determine the order of the points based on their coordinates
+    if (a.x < b.x || (a.x == b.x && a.y < b.y)) {
+        // If point `a` is "less" than point `b`, return (a, b)
+        return std::make_pair(a, b);
+    } else {
+        // Otherwise, return (b, a)
+        return std::make_pair(b, a);
+    }
+}
+
 int main() {
     try {
         std::vector<std::unique_ptr<Shape>> shapes;
@@ -189,16 +203,13 @@ int main() {
             drawShape(*shape);
         }
 
+        const FileHandler fileHandler;
         // Save shapes to file
-        if (!saveShapesToFile(shapes, "shapes.txt")) {
-            throw std::runtime_error("Failed to save shapes to file!");
-        }
+        fileHandler.saveShapesToFile(shapes, "shapes.txt");
 
         // Load shapes from file
         std::vector<std::unique_ptr<Shape>> loadedShapes;
-        if (!loadShapesFromFile(loadedShapes, "shapes.txt")) {
-            throw std::runtime_error("Failed to load shapes from file!");
-        }
+        fileHandler.loadShapesFromFile(loadedShapes, "shapes.txt");
 
         // Check if specific points are within loaded shapes
         std::vector<Point> pointsToCheck = {Point(0, 0), Point(1, 1), Point(2, 2), Point(3, 4)};

@@ -1,0 +1,4 @@
+C:/Users/sonab/OneDrive/Documents/GeometryLib/build/CMakeFiles/ODAGeometryLib.dir
+C:/Users/sonab/OneDrive/Documents/GeometryLib/build/CMakeFiles/Driver.dir
+C:/Users/sonab/OneDrive/Documents/GeometryLib/build/CMakeFiles/edit_cache.dir
+C:/Users/sonab/OneDrive/Documents/GeometryLib/build/CMakeFiles/rebuild_cache.dir

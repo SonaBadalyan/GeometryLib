@@ -1,5 +1,4 @@
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#pragma once
 
 #include "Shape.hpp"
 #include <iostream>
@@ -34,5 +33,3 @@ public:
 };
 
 } // namespace geometry
-
-#endif // GEOMETRY_HPP

@@ -1,12 +1,11 @@
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#pragma once
 
 #include <iostream>
 
 namespace geometry {
 
 // Define a constant for precision threshold to handle floating-point comparisons
-constexpr double EPSILON
+constexpr double EPSILON = 1e-9;
 
 // Define a Point structure representing a 2D point
 struct Point {
@@ -28,10 +27,11 @@ struct Point {
     // Inequality operator to compare two points
     bool operator!=(const Point& other) const;
 
+    // Define the operator< for the Point
+    bool operator<(const Point& other) const;
+
     // Computes the distance between this point and another point.
     // Formula: √((x2 - x1)^2 + (y2 - y1)^2)
     double distanceTo(const Point& other) const;
 };
 } // namespace geometry
-
-#endif // GEOMETRY_HPP

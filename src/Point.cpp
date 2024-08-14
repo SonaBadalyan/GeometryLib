@@ -7,12 +7,12 @@
 
 namespace geometry {
 
-friend std::ostream& Point::operator<<(std::ostream& out, const Point& point) {
+std::ostream& operator<<(std::ostream& out, const Point& point) {
     out << "(" << point.x << ", " << point.y << ")";
     return out;
 }
 
-friend std::istream& Point::operator>>(std::istream& in, Point& point) {
+std::istream& operator>>(std::istream& in, Point& point) {
     in >> point.x >> point.y;
     return in;
 }
@@ -24,6 +24,19 @@ bool Point::operator==(const Point& other) const {
 
 bool Point::operator!=(const Point& other) const {
     return !(*this == other);
+}
+
+bool Point::operator<(const Point& other) const {
+    // First compare the x coordinates
+    if (x < other.x) {
+        return true;
+    }
+    if (x > other.x) {
+        return false;
+    }
+    
+    // If x coordinates are equal, compare the y coordinates
+    return y < other.y;
 }
 
 double Point::distanceTo(const Point& other) const {

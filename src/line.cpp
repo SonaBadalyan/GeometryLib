@@ -13,7 +13,7 @@ Line::Line(const Point& p1, const Point& p2) : p1(p1), p2(p2) {}
 
 bool Line::contains(const Point& p) const {
     double crossProduct = (p2.y - p1.y) * (p.x - p1.x) - (p2.x - p1.x) * (p.y - p1.y);
-    return std::abs(crossProduct) < EPSILON
+    return std::abs(crossProduct) < EPSILON;
 }
 
 void Line::draw() const {

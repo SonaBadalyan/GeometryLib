@@ -1,5 +1,4 @@
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#pragma once
 
 #include "Point.hpp"
 
@@ -33,5 +32,3 @@ public:
 };
 
 } // namespace geometry
-
-#endif // GEOMETRY_HPP

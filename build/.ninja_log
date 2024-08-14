@@ -1,0 +1,27 @@
+# ninja log v6
+11	3145	7453562303606375	CMakeFiles/Driver.dir/console/main.cpp.obj	3432357b63de3bd3
+21	3463	7453558289650578	CMakeFiles/ODAGeometryLib.dir/src/Point.cpp.obj	817690f52ac0900b
+34	3482	7453558289790362	CMakeFiles/ODAGeometryLib.dir/src/Triangle.cpp.obj	e76371210a216b9
+41	3565	7453558289850041	CMakeFiles/ODAGeometryLib.dir/src/Circle.cpp.obj	a019d1342f6b4e82
+60	4610	7453547248836732	CMakeFiles/ODAGeometryLib.dir/src/file_utils.cpp.obj	77435998da3e1ba7
+12	3421	7453558289570822	CMakeFiles/ODAGeometryLib.dir/src/Line.cpp.obj	d9e197f398ba1f19
+12	347	7453559968096417	libODAGeometryLib.a	8a6ecaf556e62040
+48	4109	7453558289929834	CMakeFiles/ODAGeometryLib.dir/src/FileHandler.cpp.obj	af75f26ac41935a
+11	2230	7453559297053108	CMakeFiles/ODAGeometryLib.dir/src/LineSegment.cpp.obj	ccf30d629e75eec3
+3146	3645	7453562334950476	Driver.exe	471d37fc5b82124a
+19	3096	7453562989583033	CMakeFiles/ODAGeometryLib.dir/src/Point.cpp.obj	261539fae50492e2
+11	3461	7453562989503255	CMakeFiles/ODAGeometryLib.dir/src/Line.cpp.obj	9540e2c10f4eed18
+39	3525	7453562989792556	CMakeFiles/ODAGeometryLib.dir/src/Circle.cpp.obj	84c0d5ff0489db85
+32	3576	7453562989722669	CMakeFiles/ODAGeometryLib.dir/src/Triangle.cpp.obj	c2efefdd269b8733
+91	3620	7453562990311101	CMakeFiles/ODAGeometryLib.dir/src/LineSegment.cpp.obj	44c13da0a4bd5a21
+72	3996	7453562990111623	CMakeFiles/ODAGeometryLib.dir/src/FileHandler.cpp.obj	b8490f1fd00bf7ac
+3996	4310	7453563029356674	libODAGeometryLib.a	8a6ecaf556e62040
+3098	7167	7453563020370705	CMakeFiles/Driver.dir/console/main.cpp.obj	87b1ffb9993420e4
+7168	7554	7453563061071854	Driver.exe	471d37fc5b82124a
+16	2206	7453564463846735	CMakeFiles/ODAGeometryLib.dir/src/FileHandler.cpp.obj	b8490f1fd00bf7ac
+2208	2747	7453564485758144	libODAGeometryLib.a	8a6ecaf556e62040
+27	4357	7453564463956443	CMakeFiles/Driver.dir/console/main.cpp.obj	87b1ffb9993420e4
+4358	4786	7453564507260622	Driver.exe	471d37fc5b82124a
+14	1696	7453566027263724	CMakeFiles/ODAGeometryLib.dir/src/FileHandler.cpp.obj	b8490f1fd00bf7ac
+1698	2005	7453566044100190	libODAGeometryLib.a	8a6ecaf556e62040
+2005	2563	7453566047171965	Driver.exe	471d37fc5b82124a

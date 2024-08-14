@@ -50,7 +50,7 @@ void Circle::loadFromFile(std::istream& in) {
     }
 }
 
-std::vector<Point> Circle::getPoints() const override {
+std::vector<Point> Circle::getPoints() const {
     std::vector<Point> points;
 
     // Calculate the number of points based on a fixed criterion
