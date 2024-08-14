@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <unordered_map>
 
-
 // Helper function to check if a point is on a line segment
 bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd) {
     // Check if the point is within the bounding box of the segment
@@ -47,18 +46,22 @@ bool isPointOnSegment(const Point& p, const Point& segStart, const Point& segEnd
 // Function to check if a point is within a geometric object
 bool isPointWithin(const Point& point, const Shape& shape) {
     try {
+        // Check if the shape is a Line
         if (const Line* line = dynamic_cast<const Line*>(&shape)) {
             return isPointOnSegment(point, line->start, line->end);
         }
+        // Check if the shape is a LineSegment
         if (const LineSegment* segment = dynamic_cast<const LineSegment*>(&shape)) {
             return isPointOnSegment(point, segment->start, segment->end);
         }
+        // Check if the shape is a Circle
         if (const Circle* circle = dynamic_cast<const Circle*>(&shape)) {
             double dx = point.x - circle->center.x;
             double dy = point.y - circle->center.y;
             double distance = std::sqrt(dx * dx + dy * dy);
             return distance <= circle->radius;
         }
+        // Check if the shape is a Triangle
         if (const Triangle* triangle = dynamic_cast<const Triangle*>(&shape)) {
             // Calculate area of the triangle
             double areaOrig = std::abs((triangle->p1.x * (triangle->p2.y - triangle->p3.y) +
@@ -88,12 +91,14 @@ void drawShape(const Shape& shape) {
     try {
         std::vector<std::pair<Point, Point>> segments;
 
+        // Handle Line and LineSegment shapes
         if (const Line* line = dynamic_cast<const Line*>(&shape)) {
             segments.emplace_back(line->start, line->end);
         } else if (const LineSegment* segment = dynamic_cast<const LineSegment*>(&shape)) {
             segments.emplace_back(segment->start, segment->end);
-        } else if (const Circle* circle = dynamic_cast<const Circle*>(&shape)) {
-            // Approximate the circle with a number of segments
+        }
+        // Approximate Circle with segments
+        else if (const Circle* circle = dynamic_cast<const Circle*>(&shape)) {
             const int num_segments = 36; // Can be made configurable
             for (int i = 0; i < num_segments; ++i) {
                 double theta1 = 2 * M_PI * i / num_segments;
@@ -104,7 +109,9 @@ void drawShape(const Shape& shape) {
                          circle->center.y + circle->radius * std::sin(theta2));
                 segments.emplace_back(p1, p2);
             }
-        } else if (const Triangle* triangle = dynamic_cast<const Triangle*>(&shape)) {
+        }
+        // Handle Triangle shape
+        else if (const Triangle* triangle = dynamic_cast<const Triangle*>(&shape)) {
             segments.emplace_back(triangle->p1, triangle->p2);
             segments.emplace_back(triangle->p2, triangle->p3);
             segments.emplace_back(triangle->p3, triangle->p1);
@@ -127,7 +134,7 @@ namespace std {
         std::size_t operator()(const Point& p) const {
             auto h1 = std::hash<double>{}(p.x);
             auto h2 = std::hash<double>{}(p.y);
-            return h1 ^ (h2 << 1);
+            return h1 ^ (h2 << 1); // Combine hash values for x and y
         }
     };
 }
@@ -139,15 +146,16 @@ namespace std {
         std::size_t operator()(const std::pair<Point, Point>& p) const {
             auto h1 = std::hash<Point>{}(p.first);
             auto h2 = std::hash<Point>{}(p.second);
-            return h1 ^ (h2 << 1);
+            return h1 ^ (h2 << 1); // Combine hash values for first and second points
         }
     };
 }
 
 // Check collinearity of three points
 bool areCollinear(const Point& a, const Point& b, const Point& c) {
+    // Calculate area of the triangle formed by points a, b, and c
     double area = std::abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
-    return area < EPSILON;
+    return area < EPSILON; // Points are collinear if area is close to zero
 }
 
 // Find all points on the line defined by points a and b
@@ -164,6 +172,7 @@ std::vector<Point> findPointsOnLine(const Point& a, const Point& b, const std::v
 int main() {
     try {
         std::vector<std::unique_ptr<Shape>> shapes;
+        // Create and add shapes to the list
         shapes.push_back(std::make_unique<Line>(Point(1, 1), Point(5, 5)));
         shapes.push_back(std::make_unique<LineSegment>(Point(0, 0), Point(3, 4)));
         shapes.push_back(std::make_unique<Circle>(Point(0, 0), 5));
